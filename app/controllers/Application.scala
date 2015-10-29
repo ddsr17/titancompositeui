@@ -34,15 +34,15 @@ class Application extends Controller {
   }
 
   def display1 = Action {
-    Ok(views.html.rohith("Your new application is ready.", Nil,"",-1))
+    Ok(views.html.rohith("Your new application is ready.",("",Nil),"",0))
   }
 
   def display2 = Action {
-    Ok(views.html.ved("Your new application is ready.", Nil,"",-1))
+    Ok(views.html.ved("Your new application is ready.",("",Nil),"",0))
   }
 
   def display3 = Action {
-    Ok(views.html.sarthak("Your new application is ready.", Nil,"",-1))
+    Ok(views.html.sarthak("Your new application is ready.",("",Nil),"",0))
   }
 
   import play.api.data.Forms._
@@ -57,39 +57,79 @@ class Application extends Controller {
     //val newsItem = URLEncoder.encode(item,"UTF-8")
     var freq = ""
 
+//    val forOutput1 = for {
+//      a <- WS.url("http://localhost:8282/graphs/titanconnected/vertices?key=name&value=" + newsItem).get()
+//      b = (a.json \ "results").as[JsArray].value.head
+//      c = (b \ "frequency").asOpt[String]
+//      d = (b \ "_id").asOpt[String]
+//      e = d match {
+//        case None => Seq.empty[entityobj]
+//        case Some(id) =>
+//          val out = for {
+//          e <- WS.url("http://107.167.178.97:8282/graphs/titanconnected/vertices/" + id + "/outE?_label=Relation").get()
+//          f <- (e.json \ "results").as[JsArray].value
+//          //          f1 <- ((f \ "frequency").as[Double], (f \ "strength").as[String])
+//          g <- WS.url("http://107.167.178.97:8282/graphs/titanconnected/vertices/" + id + "/outE?_label=To").get()
+//          h <- (g.json \ "results").as[JsArray].value
+//          //          h = ((g.json \ "results" \ "frequency").as[Double], (g.json \ "results" \ "strength").as[String])
+//          k <- WS.url("http://107.167.178.97:8282/graphs/titanexample/vertices/" + (f \ "_inv").as[String]).get()
+//          m = (k.json \ "results").as[JsArray].value.head
+//          l <- WS.url("http://107.167.178.97:8282/graphs/titanexample/vertices/" + (h \ "_inv").as[String]).get()
+//          n = (l.json \ "results").as[JsArray].value.head//
+//          o = entityobj((m \ "name").as[String], (m \ "frequency").as[String], (f \ "strength").as[String], (f \ "frequency").as[Double])
+//          p = entityobj((n \ "name").as[String], (n \ "frequency").as[String], (h \ "strength").as[String], (h \ "frequency").as[Double])
+//        } yield (Seq(o, p))
+//      }
+//    } yield (c, e)
+//
 //    for {
-//      a <- WS.url("http://107.167.178.97:8282/graphs/titanconnected/vertices?key=name&value=" + newsItem).get()
-//      b = (a.json \ "results").as[JsArray].value
-//      c = b.map(res => (res \\ "frequency")).toString()
+//      res1 <- forOutput1
+//      a = res1 match {
+//        case N
+//      }
+//    }
+//
+//    match {
+//      case None => None
+//      case Some(id) => for {
+//
+//      }
+//        u =
+//          c  b.map(res => (res \\ "frequency")).toString()
 //      d = b.map(res => (res \ "_id").get.toString()) match {
 //        case Nil => None
 //        case string: Seq[String] => Some(string.head)
 //      }
 //      e <- WS.url("http://107.167.178.97:8282/graphs/titanconnected/vertices/" + d.get + "/outE?_label=Relation").get()
-//      f <- (e.json \ "results").as[JsArray].value
+//      f = ((e.json \ "results" \ "frequency").as[Double], (e.json \ "results" \ "strength").as[String])
 //      g <- WS.url("http://107.167.178.97:8282/graphs/titanconnected/vertices/" + d.get + "/outE?_label=To").get()
-//      h <- (g.json \ "results").as[JsArray].value
-//      i <-
-//
-//
-//    }
-   val futureResult: Future[Option[String]] = WS.url("http://localhost:8282/graphs/titanexample/vertices?key=name&value=" + newsItem).get().map {
+//      h = ((g.json \ "results" \ "frequency").as[Double], (g.json \ "results" \ "strength").as[String])
+//      k <- WS.url("http://107.167.178.97:8282/graphs/titanexample/vertices/" + (e.json \ "results" \ "_inv").as[String]).get()
+//      m = ((k.json \ "results" \ "name").as[String], (k.json \ "results" \ "frequency").as[String])
+//      l <- WS.url("http://107.167.178.97:8282/graphs/titanexample/vertices/" + (g.json \ "results" \ "_inv").as[String]).get()
+//      n = ((l.json \ "results" \ "name").as[String], (l.json \ "results" \ "frequency").as[String])
+//      o = entityobj(m._1, m._2, f._2, f._1)
+//      p = entityobj(n._1, n._2, h._2, h._1)
+//    } yield (o, p)
+//    forO
+    //: Future[Option[String]]
+    val futureResult = WS.url("http://localhost:8282/graphs/titanexample/vertices?key=name&value=" + newsItem).get().map {
       response => {
         val temp = (response.json \ "results").as[JsArray].value
-        freq = temp.map(res => (res \\ "frequency")).toString()
-        println(freq)
+        freq = (temp.head \ "frequency").get.toString
+        //freq = temp.map(res => (res \\ "frequency").head).toString()
+        //println(freq)
         val id = temp.map(res => (res \ "_id").get.toString()) match {
           case Nil => None
           case string: Seq[String] => Some(string.head)
         }
-        val both = (id,freq)
-        id
+        (id,freq)
       }
     }
 
     var data: Seq[Seq[JsValue]] = Seq()
 
-    val future: Future[Seq[Seq[JsValue]]]= futureResult.flatMap {
+    val future: Future[Seq[Seq[JsValue]]] = futureResult.map(x=> x._1).flatMap {
 
       case None => Future(Seq[Seq[JsValue]]())
       //case None => Future(Seq[JsValue]())
@@ -137,13 +177,13 @@ class Application extends Controller {
           //            Right(result)
           //        }
 
-          val recover = output.recover{
-            case e: JsResultException =>
-              None
-            //Redirect("http://google.com")
-
-            case js: Future[Seq[JsValue]] => Some(js)
-          }
+//          val recover = output.recover{
+//            case e: JsResultException =>
+//              None
+//            //Redirect("http://google.com")
+//
+//            case js: Future[Seq[JsValue]] => Some(js)
+//          }
 
           bothseq
         }
@@ -164,7 +204,7 @@ class Application extends Controller {
             tuple
           })
         })
-      //check.foreach().groupBy()
+        //check.foreach().groupBy()
 
         val filteredresults = check.map(temp => {
           val   afilter = temp.filter(x => {
@@ -198,7 +238,7 @@ class Application extends Controller {
 
           val check = WS.url("http://localhost:8282/graphs/titanexample/vertices/" + getName).get().map {
             res => {
-             val temp =  (res.json \ "results").get
+              val temp =  (res.json \ "results").get
               val name = (temp \ "name").get.toString()
               val vertexFrequency = (temp \ "frequency").get.toString()
 
@@ -217,8 +257,15 @@ class Application extends Controller {
     }
     }
 
-    now.map {
-      case result: Seq[Seq[entityobj]] =>
+
+    val htmlInput = for {
+      fut1 <- futureResult
+      fut2 <- now
+      //res1 <- fut1._2
+    } yield (fut1._2,fut2)
+
+    htmlInput.map {
+      case result: (String,Seq[Seq[entityobj]]) =>
         //println("result check  "+result)
         Ok(views.html.rohith("Showing data in table", result,item,fFilter))
     }
@@ -231,23 +278,22 @@ class Application extends Controller {
     //val newsItem = URLEncoder.encode(item,"UTF-8")
     var freq = ""
 
-    val futureResult: Future[Option[String]] = WS.url("http://localhost:8282/graphs/titanconnected/vertices?key=name&value=" + newsItem).get().map {
+    val futureResult = WS.url("http://localhost:8282/graphs/titanconnected/vertices?key=name&value=" + newsItem).get().map {
       response => {
         val temp = (response.json \ "results").as[JsArray].value
-        freq = temp.map(res => (res \\ "frequency")).toString()
-        println(freq)
+        freq = (temp.head \ "frequency").get.toString
         val id = temp.map(res => (res \ "_id").get.toString()) match {
           case Nil => None
           case string: Seq[String] => Some(string.head)
         }
         val both = (id,freq)
-        id
+        (id,freq)
       }
     }
 
     var data: Seq[Seq[JsValue]] = Seq()
 
-    val future: Future[Seq[Seq[JsValue]]]= futureResult.flatMap {
+    val future: Future[Seq[Seq[JsValue]]]= futureResult.map(x => x._1).flatMap {
 
       case None => Future(Seq[Seq[JsValue]]())
       //case None => Future(Seq[JsValue]())
@@ -295,13 +341,13 @@ class Application extends Controller {
           //            Right(result)
           //        }
 
-          val recover = output.recover{
-            case e: JsResultException =>
-              None
-            //Redirect("http://google.com")
-
-            case js: Future[Seq[JsValue]] => Some(js)
-          }
+//          val recover = output.recover{
+//            case e: JsResultException =>
+//              None
+//            //Redirect("http://google.com")
+//
+//            case js: Future[Seq[JsValue]] => Some(js)
+//          }
 
           bothseq
         }
@@ -322,9 +368,16 @@ class Application extends Controller {
             tuple
           })
         })
-        //check.foreach().groupBy()
+        val newcheck = check.map(x => {
+          val y = x.groupBy(_._1)
 
-        val filteredresults = check.map(temp => {
+          val z = y.map{
+            case (k,v) => (v.head)
+          }.toSeq
+          z
+        })
+
+        val filteredresults = newcheck.map(temp => {
           val   afilter = temp.filter(x => {
             x._2._1 > fFilter
           })
@@ -364,8 +417,14 @@ class Application extends Controller {
     }
     }
 
-    now.map {
-      case result: Seq[Seq[entityobj]] =>
+    val htmlInput = for {
+      fut1 <- futureResult
+      fut2 <- now
+    //res1 <- fut1._2
+    } yield (fut1._2,fut2)
+
+    htmlInput.map {
+      case result: (String,Seq[Seq[entityobj]]) =>
         Ok(views.html.ved("Showing data in table", result,item,fFilter))
     }
   }
@@ -376,23 +435,22 @@ class Application extends Controller {
 
     var freq = ""
 
-    val futureResult: Future[Option[String]] = WS.url("http://localhost:8282/graphs/sarthakretail/vertices?key=name&value=" + newsItem).get().map {
+    val futureResult = WS.url("http://localhost:8282/graphs/sarthakretail/vertices?key=name&value=" + newsItem).get().map {
       response => {
         val temp = (response.json \ "results").as[JsArray].value
-        freq = temp.map(res => (res \\ "frequency")).toString()
-        println(freq)
+        freq = (temp.head \ "frequency").get.toString
         val id = temp.map(res => (res \ "_id").get.toString()) match {
           case Nil => None
           case string: Seq[String] => Some(string.head)
         }
         val both = (id,freq)
-        id
+        both
       }
     }
 
     var data: Seq[Seq[JsValue]] = Seq()
 
-    val future: Future[Seq[Seq[JsValue]]]= futureResult.flatMap {
+    val future: Future[Seq[Seq[JsValue]]]= futureResult.map(x => x._1).flatMap {
 
       case None => Future(Seq[Seq[JsValue]]())
       //case None => Future(Seq[JsValue]())
@@ -428,13 +486,13 @@ class Application extends Controller {
             gotonevalue
           })
 
-          val recover = output.recover{
-            case e: JsResultException =>
-              None
-            //Redirect("http://google.com")
-
-            case js: Future[Seq[JsValue]] => Some(js)
-          }
+//          val recover = output.recover{
+//            case e: JsResultException =>
+//              None
+//            //Redirect("http://google.com")
+//
+//            case js: Future[Seq[JsValue]] => Some(js)
+//          }
 
           bothseq
         }
@@ -499,8 +557,14 @@ class Application extends Controller {
     }
     }
 
-    now.map {
-      case result: Seq[Seq[entityobj]] =>
+    val htmlInput = for {
+      fut1 <- futureResult
+      fut2 <- now
+    //res1 <- fut1._2
+    } yield (fut1._2,fut2)
+
+    htmlInput.map {
+      case result: (String,Seq[Seq[entityobj]]) =>
         Ok(views.html.sarthak("Showing data in table", result,item,fFilter))
     }
   }

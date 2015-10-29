@@ -1,5 +1,4 @@
-@(message: String, tableData: Seq[Seq[entityobj]],search: String,filter: Double)
-
+@(message: String, tableData: (String,Seq[Seq[entityobj]]),search: String,filter: Double)
 
 @main("Welcome to Play") {
 
@@ -10,21 +9,36 @@
         <form id = "form1" role="form" action="/getVertices1">
           <div class="form-group">
 
-            <div class="col-xs-3">
+            <div class="col-xs-6 col-sm-5 col-md-12">
               <form class="form" role="form">
                 <div class="form-group">
                   <legend>Entity Search</legend>
+                  <div class="row">
+                    <div class="col-md-4">
                   <label for="search-input1">Entity Name</label>
                   <input type="text" id="search-input1" class="form-control" name="news" value="@search">
+                    </div>
+                    <div class="col-md-4">
+                  <label for="frequency">Entity Frequency</label>
+                  <input type="text" id="frequency" class="form-control" value="@tableData._1">
+                    </div>
+                  </div>
                 </div>
 
+
                 <div class="form-group">
-                  <label for="search-input2">Frequency Filter</label>
+                  <div class="row">
+                  <div class="col-md-4">
+                    <label for="search-input2">Frequency Filter</label>
                   <input type="text" id="search-input2" class="form-control" name="frequencyfilter" value="0">
+                    </div>
+                  </div>
                 </div>
 
                 <div class="form-group">
+                  <div class="row">
                   <button class="btn btn-default" type="submit"  onclick="getSearchResult();">Go!</button>
+                </div>
                 </div>
               </form>
             </div>
@@ -33,7 +47,7 @@
       </div>
 
 
-      @if(tableData != Nil) {
+      @if(tableData._2 != Nil) {
         <div class="container">
           <div id = "table1" class="container">
             <h2>Label TO</h2>
@@ -50,7 +64,7 @@
               <tbody>
 
 
-              @tableData(1).map(data => {
+              @tableData._2(1).map(data => {
                 val parsed = data.name.split("\"")(1)
                 val finalStrength = data.strength.split("\"")(1)
                 val baseUrl = "/getVertices1?news="
@@ -83,7 +97,7 @@
         <tbody>
 
 
-        @tableData(0).map(data => {
+        @tableData._2(0).map(data => {
           val parsed = data.name.split("\"")(1)
           val finalStrength = data.strength.split("\"")(1)
           val baseUrl = "/getVertices1?news="
@@ -120,8 +134,7 @@
 
   <script>
 
-    @if(filter != -1){
-            $("#search-input2").val(@filter)
-        }
+    $("#search-input2").val(@filter)
+
   </script>
 }
