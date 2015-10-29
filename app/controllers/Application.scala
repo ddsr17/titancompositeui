@@ -53,8 +53,8 @@ class Application extends Controller {
 
   def getVertices1(item: String,fFilter: Double) = Action.async {implicit request =>
     //    val newsItem = newsForm.bindFromRequest().get
-    val newsItem = item.toLowerCase()
-    //val newsItem = URLEncoder.encode(item,"UTF-8")
+    val newsitem = item.toLowerCase()
+    val newsItem = URLEncoder.encode(newsitem,"UTF-8")
     var freq = ""
 
 //    val forOutput1 = for {
@@ -274,8 +274,8 @@ class Application extends Controller {
 
   def getVertices2(item: String,fFilter: Double) = Action.async {implicit request =>
     //    val newsItem = newsForm.bindFromRequest().get
-    val newsItem = item.toLowerCase()
-    //val newsItem = URLEncoder.encode(item,"UTF-8")
+    val newsitem = item.toLowerCase()
+    val newsItem = URLEncoder.encode(newsitem,"UTF-8")
     var freq = ""
 
     val futureResult = WS.url("http://localhost:8282/graphs/titanconnected/vertices?key=name&value=" + newsItem).get().map {
@@ -431,8 +431,8 @@ class Application extends Controller {
 
   def getVertices3(item: String,fFilter: Double) = Action.async {implicit request =>
 
-    val newsItem = item.toLowerCase()
-
+    val newsitem = item.toLowerCase()
+    val newsItem = URLEncoder.encode(newsitem,"UTF-8")
     var freq = ""
 
     val futureResult = WS.url("http://localhost:8282/graphs/sarthakretail/vertices?key=name&value=" + newsItem).get().map {
@@ -520,7 +520,7 @@ class Application extends Controller {
             x._2._1 > fFilter
           })
 
-          val results = afilter.take(100)
+          val results = afilter.take(1000)
 
           results
         })
