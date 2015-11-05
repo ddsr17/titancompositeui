@@ -113,13 +113,19 @@ class Application extends Controller {
 //    } yield (o, p)
 //    forO
     //: Future[Option[String]]
-    val futureResult = WS.url("http://localhost:8282/graphs/titanexample/vertices?key=name&value=" + newsItem).get().map {
+    val futureResult = WS.url("http://localhost:8182/graphs/titanexample/vertices?key=name&value=" + newsItem).get().map {
       response => {
         val temp = (response.json \ "results").as[JsArray].value
-        freq = (temp.head \ "frequency").get.toString
-        //freq = temp.map(res => (res \\ "frequency").head).toString()
-        //println(freq)
-        val id = temp.map(res => (res \ "_id").get.toString()) match {
+	temp match {
+          case Nil => {
+            freq = ""
+          }
+          case a => {
+            freq = (temp.head \ "frequency").get.toString
+          }
+        }        
+
+	val id = temp.map(res => (res \ "_id").get.toString()) match {
           case Nil => None
           case string: Seq[String] => Some(string.head)
         }
@@ -137,13 +143,13 @@ class Application extends Controller {
 
         val finaldata = {
 
-          val output = WS.url("http://localhost:8282/graphs/titanexample/vertices/" + a + "/outE?_label=relation").get().map {
+          val output = WS.url("http://localhost:8182/graphs/titanexample/vertices/" + a + "/outE?_label=relation").get().map {
             result => {
               (result.json \ "results").as[JsArray].value
             }
           }
 
-          val outputtoLabel = WS.url("http://localhost:8282/graphs/titanexample/vertices/" + a + "/outE?_label=TO").get().map{
+          val outputtoLabel = WS.url("http://localhost:8182/graphs/titanexample/vertices/" + a + "/outE?_label=TO").get().map{
             result => {
               (result.json \ "results").as[JsArray].value
             }
@@ -236,7 +242,7 @@ class Application extends Controller {
 
           //println(key._1)
 
-          val check = WS.url("http://localhost:8282/graphs/titanexample/vertices/" + getName).get().map {
+          val check = WS.url("http://localhost:8182/graphs/titanexample/vertices/" + getName).get().map {
             res => {
               val temp =  (res.json \ "results").get
               val name = (temp \ "name").get.toString()
@@ -278,11 +284,20 @@ class Application extends Controller {
     val newsItem = URLEncoder.encode(newsitem,"UTF-8")
     var freq = ""
 
-    val futureResult = WS.url("http://localhost:8282/graphs/titanconnected/vertices?key=name&value=" + newsItem).get().map {
+    val futureResult = WS.url("http://localhost:8182/graphs/titanconnected/vertices?key=name&value=" + newsItem).get().map {
       response => {
         val temp = (response.json \ "results").as[JsArray].value
-        freq = (temp.head \ "frequency").get.toString
-        val id = temp.map(res => (res \ "_id").get.toString()) match {
+       
+	temp match {
+          case Nil => {
+            freq = ""
+          }
+          case a => {
+            freq = (temp.head \ "frequency").get.toString
+          }
+        } 
+
+	val id = temp.map(res => (res \ "_id").get.toString()) match {
           case Nil => None
           case string: Seq[String] => Some(string.head)
         }
@@ -301,13 +316,13 @@ class Application extends Controller {
 
         val finaldata = {
 
-          val output = WS.url("http://localhost:8282/graphs/titanconnected/vertices/" + a + "/outE?_label=Relation").get().map {
+          val output = WS.url("http://localhost:8182/graphs/titanconnected/vertices/" + a + "/outE?_label=Relation").get().map {
             result => {
               (result.json \ "results").as[JsArray].value
             }
           }
 
-          val outputtoLabel = WS.url("http://localhost:8282/graphs/titanconnected/vertices/" + a + "/outE?_label=To").get().map{
+          val outputtoLabel = WS.url("http://localhost:8182/graphs/titanconnected/vertices/" + a + "/outE?_label=To").get().map{
             result => {
               (result.json \ "results").as[JsArray].value
             }
@@ -396,7 +411,7 @@ class Application extends Controller {
 
           val getName = key._1
 
-          val check = WS.url("http://localhost:8282/graphs/titanconnected/vertices/" + getName).get().map {
+          val check = WS.url("http://localhost:8182/graphs/titanconnected/vertices/" + getName).get().map {
             res => {
               val temp =  (res.json \ "results").get
               val name = (temp \ "name").get.toString()
@@ -435,11 +450,19 @@ class Application extends Controller {
     val newsItem = URLEncoder.encode(newsitem,"UTF-8")
     var freq = ""
 
-    val futureResult = WS.url("http://localhost:8282/graphs/sarthakretail/vertices?key=name&value=" + newsItem).get().map {
+    val futureResult = WS.url("http://localhost:8182/graphs/walmart/vertices?key=name&value=" + newsItem).get().map {
       response => {
         val temp = (response.json \ "results").as[JsArray].value
-        freq = (temp.head \ "frequency").get.toString
-        val id = temp.map(res => (res \ "_id").get.toString()) match {
+        
+	temp match {
+          case Nil => {
+            freq = ""
+          }
+          case a => {
+            freq = (temp.head \ "frequency").get.toString
+          }
+        }
+	val id = temp.map(res => (res \ "_id").get.toString()) match {
           case Nil => None
           case string: Seq[String] => Some(string.head)
         }
@@ -458,13 +481,13 @@ class Application extends Controller {
 
         val finaldata = {
 
-          val output = WS.url("http://localhost:8282/graphs/sarthakretail/vertices/" + a + "/outE?_label=relation").get().map {
+          val output = WS.url("http://localhost:8182/graphs/walmart/vertices/" + a + "/outE?_label=relation").get().map {
             result => {
               (result.json \ "results").as[JsArray].value
             }
           }
 
-          val outputtoLabel = WS.url("http://localhost:8282/graphs/sarthakretail/vertices/" + a + "/outE?_label=To").get().map{
+          val outputtoLabel = WS.url("http://localhost:8182/graphs/walmart/vertices/" + a + "/outE?_label=To").get().map{
             result => {
               (result.json \ "results").as[JsArray].value
             }
@@ -536,21 +559,29 @@ class Application extends Controller {
 
           val getName = key._1
 
-          val check = WS.url("http://localhost:8282/graphs/sarthakretail/vertices/" + getName).get().map {
+          val check = WS.url("http://localhost:8182/graphs/walmart/vertices/" + getName).get().map {
             res => {
               val temp =  (res.json \ "results").get
               val name = (temp \ "name").get.toString()
               val vertexFrequency = (temp \ "frequency").get.toString()
+		val dimension = name.split("@")(0)
+		val temptuple = (dimension,name,vertexFrequency)
 
-              (name,vertexFrequency)
+              temptuple
             }
           }
 
-          val finalTuple = check.map(name => entityobj(name._1,name._2, key._2._2, key._2._1))
+          val finalTuple = check.map(name => (name._1,name._2,name._3,key._2._2, key._2._1))
           finalTuple
         })
 
-        Future.sequence(necessary)
+     val send =  Future.sequence(necessary)
+	val tosend = send.map{y => {y
+        val y1=  y.groupBy(_._1).flatMap{ case (k,v) => v.map(f => entityobj(f._2,f._3,f._4,f._5))}.toSeq
+          y1
+        }}
+
+      tosend
       }
       }
       Future.sequence(dataToSend)

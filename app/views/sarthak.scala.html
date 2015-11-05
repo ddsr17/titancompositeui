@@ -18,23 +18,20 @@
                         <label for="search-input1">Entity Name</label>
                         <input type="text" id="search-input1" class="form-control" name="news" value="@search">
                       </div>
-                      <div class="col-md-4">
-                        <label for="frequency">Entity Frequency</label>
-                        <input type="text" id="frequency" class="form-control" value="@tableData._1">
-                      </div>
-                    </div>
-                  </div>
-
-
-                  <div class="form-group">
-                    <div class="row">
-                      <div class="col-md-4">
-                        <label for="search-input2">Frequency Filter</label>
+                      	
+		<div class="col-md-4">
+                        <label for="search-input2">Confidence Filter</label>
                         <input type="text" id="search-input2" class="form-control" name="frequencyfilter" value="0">
-                      </div>
-                    </div>
-                  </div>
-
+                      </div> 	
+                    
+                 
+		
+		<div class="col-md-4">
+                        <label for="frequency">Entity Confidence</label>
+                        <input type="text" id="search-input3" class="form-control" name="entityconfidence" value="@tableData._1" readonly>
+                      </div>		
+		</div>	
+		</div>
                   <div class="form-group">
                     <div class="row">
                       <button class="btn btn-default" type="submit"  onclick="getSearchResult();">Go!</button>
@@ -48,39 +45,7 @@
 
 
         @if(tableData._2 != Nil) {
-          <div class="container">
-            <div id = "table1" class="container">
-              <h2>Label TO</h2>
-
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>VFrequency</th>
-                    <th>Strength</th>
-                    <th>EFrequency</th>
-                  </tr>
-                </thead>
-                <tbody>
-
-
-                @tableData._2(1).map(data => {
-                  val parsed = data.name.split("\"")(1)
-                  val finalStrength = data.strength.split("\"")(1)
-                  val baseUrl = "/getVertices3?news="
-                  val uri = helper.urlEncode(parsed)
-
-                    <tr>
-                    <td><a style="text-decoration:none" href={baseUrl + uri + "&frequencyfilter=0"}> {parsed}</a></td>
-                    <td>{data.vFrequency}</td>
-                    <td>{finalStrength}</td>
-                    <td>{data.frequency}</td>
-                    </tr>
-                })
-                </tbody>
-              </table>
-            </div>
-          </div>
+         
         </div>
       <div id = "table2" class="container">
         <h2>Label Relation</h2>
@@ -89,9 +54,9 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>VFrequency</th>
+              <th>VConfidence</th>
               <th>Strength</th>
-              <th>EFrequency</th>
+              <th>EConfidence</th>
             </tr>
           </thead>
           <tbody>
